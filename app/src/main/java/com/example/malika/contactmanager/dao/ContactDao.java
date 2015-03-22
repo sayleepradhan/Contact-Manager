@@ -156,4 +156,45 @@ public class ContactDao {
             e.printStackTrace();
         }
     }
+
+    public int getContactId(Contact contact, Context context){
+        List<Contact> contacts = getAllContacts(context);
+        int index = -1;
+        for (Contact c: contacts){
+            if (c.equals(contact)){
+                index = contacts.indexOf(c);
+                break;
+            }
+        }
+        return index;
+    }
+
+    public Contact getContactbyIndex(int index, Context context){
+        List<Contact> contacts = getAllContacts(context);
+        return contacts.get(index);
+    }
+    public void editContact(Contact contactToEdit, Context context, long contactIndex){
+        List<String> lines = readLines(context);
+        Contact oldContact = findContactById(contactIndex,context);
+        String oldRecord = contactTransformer.transform(oldContact);
+        String newRecord = contactTransformer.transform(contactToEdit);
+        for (String record: lines){
+            if (record.equals(oldRecord))
+                lines.set(lines.indexOf(record),newRecord);
+        }
+
+        File file = new File(context.getFilesDir(), FILE_PATH);
+        try {
+            FileOutputStream fileOutputStream;
+            fileOutputStream = context.openFileOutput(FILE_PATH, Context.MODE_PRIVATE);
+            OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutputStream);
+            for (String record: lines){
+                outputWriter.write(record);
+            }
+            outputWriter.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

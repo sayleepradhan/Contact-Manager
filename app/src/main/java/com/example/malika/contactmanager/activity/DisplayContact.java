@@ -1,9 +1,11 @@
 package com.example.malika.contactmanager.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.malika.contactmanager.R;
@@ -27,14 +29,16 @@ public class DisplayContact extends ActionBarActivity {
      *
      * @param savedInstanceState
      */
-
+    private static long contactIndex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.displaycontact);
         final long contactId = getIntent().getExtras().getLong("contactId");
         ContactDao contactDao = new ContactDao();
+
         Contact contact = contactDao.findContactById(contactId, this);
+        contactIndex = contactId;
         if (contact != null) {
             updateContactDetail(contact);
         }
@@ -75,5 +79,24 @@ public class DisplayContact extends ActionBarActivity {
         inflater.inflate(R.menu.editdelete, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.edit){
+            Intent i = new Intent();
+            i.setClassName("com.example.malika.contactmanager", "com.example.malika.contactmanager.activity.EditContact");
+
+            i.putExtra("contactIndex",contactIndex);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
 }
