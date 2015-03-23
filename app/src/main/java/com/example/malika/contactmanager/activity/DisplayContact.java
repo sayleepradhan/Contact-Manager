@@ -87,11 +87,12 @@ public class DisplayContact extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*Created by Saylee Pradhan (sap140530) on 3/21/2015.
+    * This method determines the actions for the edit and delete buttons on the action bar.
+    * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         if (id == R.id.edit){
@@ -104,10 +105,9 @@ public class DisplayContact extends ActionBarActivity {
         else if (id == R.id.delete){
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.custom);
-           /* TextView text = (TextView) dialog.findViewById(R.id.text);
-            text.setText("Are your sure you want to delete this contact?");*/
+
             Button dialogButtonY = (Button) dialog.findViewById(R.id.dialogButtonYes);
-            // if button is clicked, close the custom dialog
+
             dialogButtonY.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,7 +116,6 @@ public class DisplayContact extends ActionBarActivity {
                     Toast.makeText(DisplayContact.this, "Contact deleted successfully", Toast.LENGTH_LONG).show();
                     Intent i = new Intent();
                     i.setClassName("com.example.malika.contactmanager", "com.example.malika.contactmanager.activity.ContactInfo");
-                    //i.putExtra("contactIndex",contactIndex);
                     startActivity(i);
                     finish();
                 }

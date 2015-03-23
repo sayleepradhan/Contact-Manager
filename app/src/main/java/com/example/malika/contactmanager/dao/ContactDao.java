@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,6 +92,7 @@ public class ContactDao {
             Contact contact = contactTransformer.reverse(line);
             contacts.add(contact);
         }
+        sortContacts(contacts);
         return contacts;
     }
 
@@ -158,19 +161,10 @@ public class ContactDao {
             e.printStackTrace();
         }
     }
-
-    public int getContactId(Contact contact, Context context){
-        List<Contact> contacts = getAllContacts(context);
-        int index = -1;
-        for (Contact c: contacts){
-            if (c.equals(contact)){
-                index = contacts.indexOf(c);
-                break;
-            }
-        }
-        return index;
-    }
-
+    /*Created by : Saylee Pradhan (sap140530)
+    * This method edits the details of the contact selected by the user.
+    * It fetches the old contact on the basis of the contactId and replaces it
+    * with the updated contact.*/
 
     public void editContact(Contact contactToEdit, Context context, long contactIndex){
         List<String> lines = getStringList(context);
@@ -182,7 +176,6 @@ public class ContactDao {
                 lines.set(lines.indexOf(record),newRecord);
         }
 
-        //File file = new File(context.getFilesDir(), FILE_PATH);
         try {
             FileOutputStream fileOutputStream;
             fileOutputStream = context.openFileOutput(FILE_PATH, Context.MODE_PRIVATE);
@@ -198,10 +191,7 @@ public class ContactDao {
     }
     public List<String> getStringList(Context context){
         List<String> lines = new ArrayList<String>();
-
-
         String line;
-
         try {
             InputStream inputStream = context.openFileInput(FILE_PATH);
 
@@ -209,7 +199,6 @@ public class ContactDao {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 while ((line = bufferedReader.readLine()) != null) {
-                    //if (!line.trim().isEmpty())
                       lines.add(line+"\n");
                 }
 
@@ -224,6 +213,11 @@ public class ContactDao {
 
         return lines;
     }
+
+    /* Created by : Saylee Pradhan (sap140530)
+    *  This method deletes the contact chosen by the user.
+    *  It selects the contact on the basis of the contactId and removes it
+    *  from the ArrayList, eventually removing it from the file.*/
     public void deleteContact(long contactIndex, Context context){
         List<String> lines = getStringList(context);
         String idx = String.valueOf(contactIndex);
@@ -243,5 +237,17 @@ public class ContactDao {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*Created by : Saylee Pradhan (sap140530)
+    * This method sorts the contact list alphabetically as per the first name of the contact.*/
+    public void sortContacts(List<Contact> contacts){
+        Collections.sort(contacts, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact lhs, Contact rhs) {
+                return lhs.getFirstName().compareTo(rhs.getFirstName());
+            }
+        });
+
     }
 }

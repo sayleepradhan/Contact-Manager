@@ -22,6 +22,10 @@ public class EditContact extends ActionBarActivity {
     private ContactGenerator contactGenerator;
     private static Contact oldContact;
     public static Context context;
+
+    /* Created by Saylee Pradhan (sap140530)
+    * This method is called at the initialization of EditContact activity.
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +37,11 @@ public class EditContact extends ActionBarActivity {
         context = this;
         if (oldContact != null) {
             populateForm(oldContact);
-            //contactIndex = contactDao.getContactId(contact,this);
         }
 
     }
-
+/*Created by Saylee Pradhan (sap140530) on 3/21/2015.
+* This method populates the TextViews as per the details of the contact on the file.*/
     public void populateForm(Contact contact){
         TextView firstName = (TextView) findViewById(R.id.firstName);
         firstName.setText(contact.getFirstName());
@@ -48,7 +52,8 @@ public class EditContact extends ActionBarActivity {
         TextView email = (TextView) findViewById(R.id.email);
         email.setText(contact.getEmail());
     }
-
+/* Created by Saylee Pradhan (sap140530) on 3/21/2015.
+*  It inflates the action bar menu. */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,15 +62,16 @@ public class EditContact extends ActionBarActivity {
         return true;
     }
 
+    /*Created by Saylee Pradhan (sap140530) on 3/21/2015.
+    * This method determines the actions for save and exit buttons on the action bar.
+    * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (item.getItemId() == R.id.save) {
+        if (id == R.id.save) {
             Contact contactFromView = contactGenerator.generate();
 
             if(contactFromView.getFirstName().toString().trim().equals(""))
@@ -87,7 +93,7 @@ public class EditContact extends ActionBarActivity {
                 finish();
             }
         }
-        if (item.getItemId() == R.id.cancel){
+        if (id == R.id.cancel){
             Intent i = new Intent();
             i.setClassName("com.example.malika.contactmanager", "com.example.malika.contactmanager.activity.ContactInfo");
             startActivity(i);
