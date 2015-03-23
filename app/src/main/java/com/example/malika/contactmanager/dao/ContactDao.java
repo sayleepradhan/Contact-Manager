@@ -8,12 +8,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Malika Pahva (mxp134930) on 3/18/2015.
@@ -114,7 +116,7 @@ public class ContactDao {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 while ((line = bufferedReader.readLine()) != null) {
-                    lines.add(line + "\n");
+                    lines.add(line+"\n");
                 }
 
                 inputStream.close();
@@ -169,21 +171,66 @@ public class ContactDao {
         return index;
     }
 
-    public Contact getContactbyIndex(int index, Context context){
-        List<Contact> contacts = getAllContacts(context);
-        return contacts.get(index);
-    }
+
     public void editContact(Contact contactToEdit, Context context, long contactIndex){
-        List<String> lines = readLines(context);
-        Contact oldContact = findContactById(contactIndex,context);
-        String oldRecord = contactTransformer.transform(oldContact);
+        List<String> lines = getStringList(context);
+        contactToEdit.setId(System.currentTimeMillis());
         String newRecord = contactTransformer.transform(contactToEdit);
+        String idx = String.valueOf(contactIndex);
         for (String record: lines){
-            if (record.equals(oldRecord))
+            if (record.contains(idx))
                 lines.set(lines.indexOf(record),newRecord);
         }
 
-        File file = new File(context.getFilesDir(), FILE_PATH);
+        //File file = new File(context.getFilesDir(), FILE_PATH);
+        try {
+            FileOutputStream fileOutputStream;
+            fileOutputStream = context.openFileOutput(FILE_PATH, Context.MODE_PRIVATE);
+            OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutputStream);
+            for (String record: lines){
+                outputWriter.write(record);
+            }
+            outputWriter.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public List<String> getStringList(Context context){
+        List<String> lines = new ArrayList<String>();
+
+
+        String line;
+
+        try {
+            InputStream inputStream = context.openFileInput(FILE_PATH);
+
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                while ((line = bufferedReader.readLine()) != null) {
+                    //if (!line.trim().isEmpty())
+                      lines.add(line+"\n");
+                }
+
+                inputStream.close();
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return lines;
+    }
+    public void deleteContact(long contactIndex, Context context){
+        List<String> lines = getStringList(context);
+        String idx = String.valueOf(contactIndex);
+        for (String record: lines){
+            if (record.contains(idx))
+                lines.remove(lines.indexOf(record));
+        }
         try {
             FileOutputStream fileOutputStream;
             fileOutputStream = context.openFileOutput(FILE_PATH, Context.MODE_PRIVATE);

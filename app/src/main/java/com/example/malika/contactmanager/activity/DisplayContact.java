@@ -1,12 +1,18 @@
 package com.example.malika.contactmanager.activity;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.malika.contactmanager.R;
 import com.example.malika.contactmanager.dao.ContactDao;
@@ -30,13 +36,14 @@ public class DisplayContact extends ActionBarActivity {
      * @param savedInstanceState
      */
     private static long contactIndex;
+    private static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.displaycontact);
         final long contactId = getIntent().getExtras().getLong("contactId");
         ContactDao contactDao = new ContactDao();
-
+        context = this;
         Contact contact = contactDao.findContactById(contactId, this);
         contactIndex = contactId;
         if (contact != null) {
@@ -94,9 +101,38 @@ public class DisplayContact extends ActionBarActivity {
             i.putExtra("contactIndex",contactIndex);
             startActivity(i);
         }
+        else if (id == R.id.delete){
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.custom);
+           /* TextView text = (TextView) dialog.findViewById(R.id.text);
+            text.setText("Are your sure you want to delete this contact?");*/
+            Button dialogButtonY = (Button) dialog.findViewById(R.id.dialogButtonYes);
+            // if button is clicked, close the custom dialog
+            dialogButtonY.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContactDao contactDao = new ContactDao();
+                    contactDao.deleteContact(contactIndex,context);
+                    Toast.makeText(DisplayContact.this, "Contact deleted successfully", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent();
+                    i.setClassName("com.example.malika.contactmanager", "com.example.malika.contactmanager.activity.ContactInfo");
+                    //i.putExtra("contactIndex",contactIndex);
+                    startActivity(i);
+                    finish();
+                }
+            });
+            Button dialogButtonN = (Button) dialog.findViewById(R.id.dialogButtonNo);
+            // if button is clicked, close the custom dialog
+            dialogButtonN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            dialog.show();
+        }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }

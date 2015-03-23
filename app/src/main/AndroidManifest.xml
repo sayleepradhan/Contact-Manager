@@ -29,6 +29,10 @@
             android:name=".activity.EditContact"
             android:label="@string/title_activity_edit_contact" >
         </activity>
+        <activity
+            android:name=".activity.DeleteContact"
+            android:label="@string/title_activity_delete_contact" >
+        </activity>
     </application>
 
 </manifest>
