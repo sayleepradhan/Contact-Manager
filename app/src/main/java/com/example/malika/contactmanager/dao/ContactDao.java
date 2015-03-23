@@ -221,10 +221,15 @@ public class ContactDao {
     public void deleteContact(long contactIndex, Context context){
         List<String> lines = getStringList(context);
         String idx = String.valueOf(contactIndex);
+        int indexTodelete = -1;
         for (String record: lines){
-            if (record.contains(idx))
-                lines.remove(lines.indexOf(record));
+            Contact c = contactTransformer.reverse(record);
+            String index = String.valueOf(c.getId());
+            if (index.equals(idx))
+                //lines.remove(lines.indexOf(record));
+                indexTodelete = lines.indexOf(record);
         }
+        lines.remove(indexTodelete);
         try {
             FileOutputStream fileOutputStream;
             fileOutputStream = context.openFileOutput(FILE_PATH, Context.MODE_PRIVATE);
