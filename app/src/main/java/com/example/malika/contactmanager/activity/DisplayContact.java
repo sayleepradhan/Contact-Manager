@@ -111,6 +111,7 @@ public class DisplayContact extends ActionBarActivity {
             dialogButtonY.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dialog.dismiss();
                     ContactDao contactDao = new ContactDao();
                     contactDao.deleteContact(contactIndex,context);
                     Toast.makeText(DisplayContact.this, "Contact deleted successfully", Toast.LENGTH_LONG).show();
